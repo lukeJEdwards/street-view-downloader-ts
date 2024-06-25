@@ -1,5 +1,5 @@
 import type { AxiosInstance } from 'axios'
-import type { location, panorama } from './types'
+import type { location, panorama } from '../types'
 
 /**
  *
@@ -62,7 +62,7 @@ function extractPanoramas(text: string): panorama[] {
  * @param lon lonitude of the location
  * @returns return either a panorama object or and empty list if none was found
  */
-async function searchPanorama(session: AxiosInstance, lat: number, lon: number): Promise<panorama | panorama[]> {
+export async function searchPanorama(session: AxiosInstance, lat: number, lon: number): Promise<panorama | panorama[]> {
   const url = makeSearchUrl(lat, lon)
   const response = await session.get<string>(url)
   const panoramas = extractPanoramas(response.data)
@@ -76,9 +76,7 @@ async function searchPanorama(session: AxiosInstance, lat: number, lon: number):
  * @param locations array of locations
  * @returns list panorama for each location provided
  */
-async function searchPanoramas(session: AxiosInstance, locations: location[]): Promise<panorama[]> {
+export async function searchPanoramas(session: AxiosInstance, locations: location[]): Promise<panorama[]> {
   const results = await Promise.all(locations.map(async location => await searchPanorama(session, location.lat, location.lon)))
   return results.filter(p => !Array.isArray(p)) as panorama[]
 }
-
-export { searchPanorama, searchPanoramas }

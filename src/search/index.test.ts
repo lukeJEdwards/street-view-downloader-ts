@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import axios from 'axios'
 
-import { searchPanorama, searchPanoramas } from '../src'
+import { searchPanorama, searchPanoramas } from './index'
 
 const instance = axios.create()
 
