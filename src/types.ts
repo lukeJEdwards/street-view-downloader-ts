@@ -1,3 +1,5 @@
+import type { Image } from 'canvas'
+
 /**
  * location type
  */
@@ -17,4 +19,16 @@ export interface panorama {
   pitch?: number
   roll?: number
   date?: string
+}
+
+export interface TileInfo {
+  x: number
+  y: number
+  fileURL: string
+}
+
+export interface Tile {
+  x: number
+  y: number
+  image: Image
 }
