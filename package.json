@@ -1,7 +1,7 @@
 {
   "name": "street-view-downloader",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "packageManager": "pnpm@9.1.1",
   "author": "Luke Edwards",
   "license": "MIT",
