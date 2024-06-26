@@ -2,7 +2,7 @@
   "name": "street-view-downloader",
   "type": "module",
   "version": "0.0.1",
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@9.1.1",
   "author": "Luke Edwards",
   "license": "MIT",
   "homepage": "https://github.com/lukeJEdwards/street-view-downloader-ts#readme",
