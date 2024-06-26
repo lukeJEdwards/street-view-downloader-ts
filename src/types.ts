@@ -21,13 +21,13 @@ export interface panorama {
   date?: string
 }
 
-export interface TileInfo {
+export interface tileInfo {
   x: number
   y: number
   fileURL: string
 }
 
-export interface Tile {
+export interface tile {
   x: number
   y: number
   image: Image

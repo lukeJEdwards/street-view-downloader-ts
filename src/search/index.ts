@@ -1,3 +1,7 @@
+// search and download panorama information from Google street view
+// google - streetview 1.2.9 https://pypi.org/project/google-streetview/
+// Modified the files to all for concurrency for faster download performance.
+
 import type { AxiosInstance } from 'axios'
 import type { location, panorama } from '../types'
 
@@ -9,7 +13,7 @@ import type { location, panorama } from '../types'
  * @param lon lonitude of the location
  * @returns url string for getting the location panorama
  */
-function makeSearchUrl(lat: number, lon: number): string {
+export function makeSearchUrl(lat: number, lon: number): string {
   return `https://maps.googleapis.com/maps/api/js/GeoPhotoService.SingleImageSearch?pb=!1m5!1sapiv3!5sUS!11m2!1m1!1b0!2m4!1m2!3d${lat}!4d${lon}!2d50!3m10!2m2!1sen!2sGB!9m1!1e2!11m4!1m3!1e2!2b1!3e2!4m10!1e1!1e2!1e3!1e4!1e8!1e6!5m1!1e2!6m1!1e2&callback=callbackfunc`
 }
 
@@ -21,7 +25,7 @@ function makeSearchUrl(lat: number, lon: number): string {
  * @returns A list of objects of type panorama
  */
 
-function extractPanoramas(text: string): panorama[] {
+export function extractPanoramas(text: string): panorama[] {
   // The response is actually JavaScript code. It's a function with a single
   // input which is a huge deeply nested array of items.
   const blobMatch = text.match(/callbackfunc\( (.*) \)$/)
@@ -66,8 +70,8 @@ export async function searchPanorama(session: AxiosInstance, lat: number, lon: n
   const url = makeSearchUrl(lat, lon)
   const response = await session.get<string>(url)
   const panoramas = extractPanoramas(response.data)
-  const sortedPanoramas = panoramas.filter(pan => pan.date).sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-  return sortedPanoramas.length > 0 ? sortedPanoramas[0] : panoramas
+  const sortedPanoramas = panoramas.sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+  return sortedPanoramas.length > 0 ? sortedPanoramas[0] : sortedPanoramas
 }
 
 /**

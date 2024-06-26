@@ -1,6 +1,6 @@
-import type { location } from './types'
+import type { location, panorama } from './types'
 
 import { searchPanorama, searchPanoramas } from './search'
 import { getPanorama } from './download'
 
-export { location, searchPanorama, searchPanoramas, getPanorama }
+export { location, panorama, searchPanorama, searchPanoramas, getPanorama }
