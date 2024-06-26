@@ -25,8 +25,8 @@ const mockTileInfo = {
 describe('getWidthAndHeightFromZoom', () => {
   it('should return correct width and height for given zoom level', () => {
     const [width, height] = getWidthAndHeightFromZoom(5)
-    expect(width).toBe(32) // Example expected width for zoom 5
-    expect(height).toBe(16) // Example expected height for zoom 5
+    expect(width).toBe(32)
+    expect(height).toBe(16)
   })
 })
 
@@ -44,7 +44,6 @@ describe('fetchPanoramaTile', () => {
     vi.spyOn(session, 'get').mockResolvedValueOnce({ data: mockResponseTile })
     const image = await fetchPanoramaTile(session, mockTileInfo)
     expect(image).toBeDefined()
-    // Additional assertions can be made about the loaded image
   })
 })
 

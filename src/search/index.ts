@@ -28,10 +28,14 @@ export function makeSearchUrl(lat: number, lon: number): string {
 export function extractPanoramas(text: string): panorama[] {
   // The response is actually JavaScript code. It's a function with a single
   // input which is a huge deeply nested array of items.
-  const blobMatch = text.match(/callbackfunc\( (.*) \)$/)
+  if (text.indexOf('\''))
+    text = text.replace(/'/g, '"')
+
+  const blobMatch = text.match(/callbackfunc\((.*)\)/)
   if (!blobMatch)
     return []
   const blob = blobMatch[1]
+
   const data = JSON.parse(blob)
 
   if (JSON.stringify(data) === JSON.stringify([[5, 'generic', 'Search returned no images.']]))
