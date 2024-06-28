@@ -85,6 +85,6 @@ export async function searchPanorama(session: AxiosInstance, lat: number, lon: n
  * @returns list panorama for each location provided
  */
 export async function searchPanoramas(session: AxiosInstance, locations: location[]): Promise<panorama[]> {
-  const results = await Promise.all(locations.map(async location => await searchPanorama(session, location.lat, location.lon)))
+  const results = await Promise.all(locations.map(async location => await searchPanorama(session, location[0], location[1])))
   return results.filter(p => !Array.isArray(p)) as panorama[]
 }

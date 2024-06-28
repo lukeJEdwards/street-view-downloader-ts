@@ -4,13 +4,10 @@
 
 import * as fs from 'node:fs'
 import { Buffer } from 'node:buffer'
+import { Image, createCanvas, loadImage } from 'canvas'
 
-import type { AxiosInstance, AxiosResponse } from 'axios'
-import type { Image } from 'canvas'
-import { createCanvas, loadImage } from 'canvas'
-
-import axios from 'axios'
-import type { tile, tileInfo } from '../types'
+import type { AxiosInstance } from 'axios'
+import type { tile } from '../types'
 
 /**
  *
@@ -46,14 +43,14 @@ export function makeDownloadUrl(panoId: string, zoom: number, x: number, y: numb
  * @param tileInfo the tile infomation
  * @returns canvas Image object
  */
-export async function fetchPanoramaTile(session: AxiosInstance, tileInfo: tileInfo): Promise<Image | null> {
+export async function fetchPanoramaTile(session: AxiosInstance, tileInfo: tile): Promise<Image> {
   try {
-    const response: AxiosResponse = await axios.get(tileInfo.fileURL, { responseType: 'arraybuffer' })
+    const response = await session.get(tileInfo.fileURL, { responseType: 'arraybuffer' })
     const image = await loadImage(Buffer.from(response.data))
     return image
   }
   catch (error) {
-    return null
+    return new Image()
   }
 }
 
@@ -65,13 +62,13 @@ export async function fetchPanoramaTile(session: AxiosInstance, tileInfo: tileIn
  * @param zoom the zoom on the panorama
  * @returns Array of tileInfo object containing position x, y and url
  */
-export function getTileInfo(panoId: string, zoom: number): tileInfo[] {
-  const tileInfo: tileInfo[] = []
+export function getTileInfo(panoId: string, zoom: number): tile[] {
+  const tileInfo: tile[] = []
   const [width, height] = getWidthAndHeightFromZoom(zoom)
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
       const url = makeDownloadUrl(panoId, zoom, x, y)
-      tileInfo.push({ x, y, fileURL: url })
+      tileInfo.push({ x, y, fileURL: url, image: new Image() })
     }
   }
   return tileInfo
@@ -87,17 +84,10 @@ export function getTileInfo(panoId: string, zoom: number): tileInfo[] {
  * @returns An array of Tile objects that contain position x, y and the canvas Image object of the tile
  */
 export async function getTiles(session: AxiosInstance, panoId: string, zoom: number): Promise<tile[] | null> {
-  const tileInfo = getTileInfo(panoId, zoom)
-  const images = await Promise.all(tileInfo.map(info => fetchPanoramaTile(session, info)))
+  const tiles = getTileInfo(panoId, zoom)
+  const images = await Promise.all(tiles.map(info => fetchPanoramaTile(session, info)))
 
-  if (images.includes(null))
-    return null
-
-  const tiles: tile[] = tileInfo.map((info, i) => ({
-    x: info.x,
-    y: info.y,
-    image: images[i] as Image,
-  }))
+  tiles.forEach((tile, i) => tile.image = images[i])
 
   return tiles
 }
@@ -109,11 +99,11 @@ export async function getTiles(session: AxiosInstance, panoId: string, zoom: num
  * @param session The Axios session for getting the tile
  * @param panoId panorama id
  * @param destination location to save the image
- * @param index index of image
+ * @param fileName name of the saved file
  * @param zoom the zoom on the panorama
  * @returns void
  */
-export async function getPanorama(session: AxiosInstance, panoId: string, destination: string, index: number, zoom: number = 5): Promise<void> {
+export async function getPanorama(session: AxiosInstance, panoId: string, destination: string, fileName: string = 'image', zoom: number = 5): Promise<void> {
   const tileWidth = 512
   const tileHeight = 512
   const [totalWidth, totalHeight] = getWidthAndHeightFromZoom(zoom)
@@ -130,5 +120,5 @@ export async function getPanorama(session: AxiosInstance, panoId: string, destin
     ctx.drawImage(tile.image, tile.x * tileWidth, tile.y * tileHeight, tileWidth, tileHeight)
 
   const buffer = canvas.toBuffer('image/jpeg')
-  fs.writeFileSync(`${destination}/image-${index}.jpg`, buffer)
+  fs.writeFileSync(`${destination}/${fileName}.jpg`, buffer)
 }
