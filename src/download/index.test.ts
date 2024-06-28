@@ -2,6 +2,7 @@ import * as fs from 'node:fs'
 import { Buffer } from 'node:buffer'
 import { join } from 'node:path'
 import axios from 'axios'
+import { Image } from 'canvas'
 import { describe, expect, it, vi } from 'vitest'
 
 // Import the functions to be tested from the second file
@@ -20,6 +21,7 @@ const mockTileInfo = {
   x: 9,
   y: 3,
   fileURL: 'https://cbk0.google.com/cbk?output=tile&panoid=UpvOHBL_dHPIaRf3Wmdo0Q&zoom=5&x=9&y=3',
+  image: new Image(),
 }
 
 describe('getWidthAndHeightFromZoom', () => {
