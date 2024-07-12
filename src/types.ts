@@ -1,30 +1,31 @@
 import type { Image } from 'canvas'
 
-/**
- * location type
- */
-export type location = [lat: number, lon: number]
+export type Location = [lat: number, lon: number]
 
-/**
- * panorama info infomation
- */
-export interface panorama {
-  readonly pano_id: string
-  readonly lat: number
-  readonly lon: number
-  readonly heading: number
-  readonly pitch?: number
-  readonly roll?: number
-  readonly date?: string
+export interface Panorama {
+  pano_id: string
+  pos: Location
+  heading: number
+  pitch?: number
+  roll?: number
+  date?: Date
 }
 
-/**
- * Tile infomation
- */
-export interface tile {
-  readonly x: number
-  readonly y: number
-  readonly fileURL: string
-
+export interface Tile {
+  x: number
+  y: number
   image: Image
+}
+
+export interface TileInfo {
+  x: number
+  y: number
+  fileurl: string
+}
+
+export interface MetaData {
+  pano_id: string
+  location: Location
+  date: string
+  copyright: string
 }
